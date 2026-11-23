@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>스모크 보트 (Smoke Vote) - 캠퍼스 클린 흡연부스 캠페인</title>
+
+  <!-- 한글 웹폰트 (Pretendard + Noto Sans KR 폴백) -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Pretendard"', '"Noto Sans KR"', 'Apple SD Gothic Neo', 'Malgun Gothic', 'sans-serif'],
+          },
+          colors: {
+            ink: '#1e241e',
+            paper: '#f9fbf7',
+            marker: {
+              light: '#e8f7d4',
+              DEFAULT: '#a8e063',
+              deep: '#74b838',
+              dark: '#4f8521',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* 기본 타이포그래피 및 스크롤 정리 */
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f0f5ea;
+      color: #1e241e;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* 스케치 감성의 3D 입체 프레스 버튼 */
+    .tactile-btn {
+      box-shadow: 0 4px 0 #1e241e;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+    }
+    .tactile-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #1e241e;
+    }
+
+    /* 스케치의 연두색 형광펜 이중 오프셋 그림자 카드 */
+    .sketch-choice-card {
+      box-shadow: 4px 4px 0 #e8f7d4, 0 3px 0 #1e241e;
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease, background-color 0.15s ease;
+    }
+    .sketch-choice-card:active {
+      transform: translateY(2px);
+      box-shadow: 2px 2px 0 #e8f7d4, 0 1px 0 #1e241e;
+    }
+    .sketch-choice-selected {
+      background-color: #e8f7d4 !important;
+      box-shadow: 0 0 0 4px #a8e063, 0 4px 0 #1e241e !important;
+      animation: choicePop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes choicePop {
+      0% { transform: scale(0.96); }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    /* 형광펜 테두리 글로우 (사진 업로드 박스) */
+    .marker-frame {
+      box-shadow: 0 0 0 5px #e8f7d4;
+    }
+
+    /* 입력 검증 실패 흔들림 효과 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    .animate-shake {
+      animation: shake 0.35s ease-in-out;
+    }
+
+    /* 모달 및 탭 등장 트랜지션 */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-pop-in {
+      animation: popIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-tab-in {
+      animation: fadeSlide 0.2s ease-out forwards;
+    }
+
+    /* 인증 스탬프 도장 애니메이션 */
+    @keyframes stampIn {
+      0% { opacity: 0; transform: scale(1.6) rotate(-20deg); }
+      100% { opacity: 1; transform: scale(1) rotate(-8deg); }
+    }
+    .animate-stamp {
+      animation: stampIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.14s forwards;
+      opacity: 0;
+    }
+
+    /* 콘페티 낙하 애니메이션 */
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(380px) rotate(540deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: absolute;
+      top: 0;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: confettiFall 1.75s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* 모의 쿠폰 바코드 스트라이프 */
+    .barcode-pattern {
+      background-image: repeating-linear-gradient(
+        90deg,
+        #1e241e 0px,
+        #1e241e 2px,
+        transparent 2px,
+        transparent 4px,
+        #1e241e 4px,
+        #1e241e 7px,
+        transparent 7px,
+        transparent 9px,
+        #1e241e 9px,
+        #1e241e 10px,
+        transparent 10px,
+        transparent 13px
+      );
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-start sm:py-6 sm:px-4">
+
+  <!-- ==================== 상단 토스트 알림 컨테이너 ==================== -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[400px] pointer-events-none flex flex-col gap-2"></div>
+
+  <!-- ==================== 모바일 퍼스트 폰 프레임 컨테이너 ==================== -->
+  <main class="w-full max-w-[430px] min-h-screen sm:min-h-0 bg-paper sm:rounded-[34px] sm:border-[2.5px] sm:border-ink sm:shadow-[0_14px_38px_rgba(30,36,30,0.14)] flex flex-col justify-between overflow-hidden relative">
+
+    <!-- 상단 헤더 & 3탭 내비게이션 -->
+    <div>
+      <!-- QR 부스 위치 배지 바 -->
+      <div class="bg-marker-light border-b-2 border-ink/15 px-4 py-2.5 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="text-sm leading-none shrink-0" aria-hidden="true">📍</span>
+          <span id="booth-location-label" class="text-xs font-extrabold text-ink truncate">공학관 1호 부스</span>
+        </div>
+        <span class="inline-flex items-center gap-1 text-[11px] font-extrabold text-marker-dark bg-white border border-marker-deep/50 px-2.5 py-0.5 rounded-full shrink-0 shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-marker-deep animate-pulse"></span>
+          QR 인증됨
+        </span>
+      </div>
+
+      <!-- 앱 타이틀 + 형광펜 밑줄 + 3탭 세그먼트 컨트롤 -->
+      <header class="px-5 pt-5 pb-3.5 bg-paper">
+        <div class="text-center">
+          <h1 class="text-[24px] font-black tracking-tight text-ink leading-tight">
+            스모크 보트 <span class="font-extrabold text-ink/75">(Smoke Vote)</span>
+          </h1>
+          <!-- 스케치 느낌의 연두색 형광펜 언더라인 -->
+          <div class="mt-2.5 mx-auto w-full h-2.5 rounded-full bg-gradient-to-r from-marker-light via-marker to-marker-light border border-marker-deep/30"></div>
+        </div>
+
+        <!-- 3탭 세그먼트 내비게이션 (투표하기 / 실시간 현황 / 내 포인트) -->
+        <nav aria-label="메인 메뉴" class="mt-4 bg-white p-1.5 rounded-2xl grid grid-cols-3 gap-1 border-2 border-ink shadow-[0_2px_0_#e8f7d4]">
+          <button
+            id="tab-btn-vote"
+            type="button"
+            onclick="switchTab('vote')"
+            class="py-2.5 px-1.5 rounded-xl text-[13px] font-extrabold transition-all bg-marker text-ink border border-ink shadow-[0_2px_0_#1e241e]"
+          >
+            🗳️ 투표하기
+          </button>
+          <button
+            id="tab-btn-live"
+            type="button"
+            onclick="switchTab('live')"
+            class="py-2.5 px-1.5 rounded-xl text-[13px] font-bold transition-all text-ink/60 hover:text-ink hover:bg-marker-light/50"
+          >
+            📊 실시간 현황
+          </button>
+          <button
+            id="tab-btn-points"
+            type="button"
+            onclick="switchTab('points')"
+            class="py-2.5 px-1.5 rounded-xl text-[13px] font-bold transition-all text-ink/60 hover:text-ink hover:bg-marker-light/50"
+          >
+            🪙 내 포인트
+          </button>
+        </nav>
+      </header>
+
+      <!-- ================================================================ -->
+      <!-- TAB 1: 투표하기 (메인 투표 화면)                                  -->
+      <!-- ================================================================ -->
+      <section id="view-vote" class="px-5 pb-6 space-y-5 animate-tab-in">
+
+        <!-- 1. 이번 주 투표 주제 박스 (질문 문구 명확히 강조) -->
+        <div class="rounded-2xl border-[2.5px] border-ink bg-white px-4 py-4 text-center shadow-[0_4px_0_#e8f7d4]">
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-marker-light border border-marker-deep/50 text-[11px] font-extrabold text-marker-dark mb-2">
+            <span>🔥</span>
+            <span>이번 주 투표</span>
+          </div>
+
+          <!-- 무엇을 고르는지 바로 알 수 있는 질문 문구 -->
+          <p id="vote-question-prompt" class="text-[14px] font-extrabold text-marker-dark bg-marker-light/70 inline-block px-3 py-1 rounded-xl mb-2 break-keep">
+            Q. 이 둘 중 더 좋은 것은?
+          </p>
+
+          <!-- 대형 매치업 타이틀 -->
+          <h2 id="vote-topic-matchup" class="text-[19px] font-black text-ink leading-snug break-keep">
+            교수님 휴강 공지 <span class="text-marker-deep mx-0.5">vs</span> 시험 범위 축소
+          </h2>
+        </div>
+
+        <!-- 2. 이지선다 선택 카드 (좌우 나란히) -->
+        <div id="choice-group" class="grid grid-cols-2 gap-3.5">
+          <!-- 선택지 A -->
+          <button
+            id="choice-btn-A"
+            type="button"
+            onclick="selectOption('A')"
+            aria-pressed="false"
+            class="sketch-choice-card relative min-h-[78px] px-3 py-4 rounded-2xl border-2 border-ink bg-white hover:bg-marker-light/40 text-center flex flex-col items-center justify-center gap-1.5"
+          >
+            <span id="choice-check-A" class="hidden absolute -top-2.5 -right-2 w-6 h-6 rounded-full bg-marker-deep text-white border-2 border-ink flex items-center justify-center shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </span>
+            <span id="choice-tag-A" class="text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-ink/60">OPTION A</span>
+            <span id="choice-label-A" class="text-[15px] font-black text-ink leading-tight break-keep">교수님 휴강 공지</span>
+          </button>
+
+          <!-- 선택지 B -->
+          <button
+            id="choice-btn-B"
+            type="button"
+            onclick="selectOption('B')"
+            aria-pressed="false"
+            class="sketch-choice-card relative min-h-[78px] px-3 py-4 rounded-2xl border-2 border-ink bg-white hover:bg-marker-light/40 text-center flex flex-col items-center justify-center gap-1.5"
+          >
+            <span id="choice-check-B" class="hidden absolute -top-2.5 -right-2 w-6 h-6 rounded-full bg-marker-deep text-white border-2 border-ink flex items-center justify-center shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </span>
+            <span id="choice-tag-B" class="text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-ink/60">OPTION B</span>
+            <span id="choice-label-B" class="text-[15px] font-black text-ink leading-tight break-keep">시험 범위 축소</span>
+          </button>
+        </div>
+
+        <!-- 3. 재떨이 꽁초 인증 사진 업로드 박스 (스케치의 상단 걸침 라벨 디자인) -->
+        <div class="pt-2">
+          <div id="photo-upload-frame" class="relative rounded-2xl border-2 border-ink bg-white marker-frame transition-all">
+            <!-- 상단 테두리에 걸치는 제목 -->
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-paper px-3 whitespace-nowrap rounded-full">
+              <span class="text-[13.5px] font-black text-ink tracking-tight">재떨이 꽁초 인증 사진 업로드</span>
+            </div>
+
+            <!-- 실제 파일/카메라 입력 -->
+            <input
+              id="photo-file-input"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              class="hidden"
+              onchange="handlePhotoFileChange(event)"
+            />
+
+            <!-- 업로드 전 기본 일러스트 상태 -->
+            <div
+              id="photo-empty-state"
+              role="button"
+              tabindex="0"
+              onclick="triggerPhotoInput()"
+              onkeydown="if(event.key==='Enter'||event.key===' ') triggerPhotoInput()"
+              class="px-4 pt-7 pb-5 flex flex-col items-center justify-center cursor-pointer rounded-2xl hover:bg-marker-light/30 transition-colors"
+            >
+              <!-- 스케치의 카메라 + 재떨이 꽁초 라인아트 SVG -->
+              <div class="flex items-center justify-center gap-6 mb-3">
+                <!-- 연두색 형광펜 카메라 SVG -->
+                <svg class="w-16 h-16" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="10" y="20" width="60" height="42" rx="8" fill="#A8E063" stroke="#1E241E" stroke-width="3.2"/>
+                  <path d="M26 20L31 11H49L54 20" fill="#E8F7D4" stroke="#1E241E" stroke-width="3.2" stroke-linejoin="round"/>
+                  <circle cx="40" cy="41" r="12" fill="#FFFFFF" stroke="#1E241E" stroke-width="3.2"/>
+                  <circle cx="40" cy="41" r="6" fill="#74B838" stroke="#1E241E" stroke-width="2.4"/>
+                  <circle cx="58" cy="30" r="3" fill="#1E241E"/>
+                </svg>
+
+                <!-- 방향 화살표 -->
+                <svg class="w-5 h-5 text-marker-deep shrink-0" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                </svg>
+
+                <!-- 재떨이와 담배꽁초 라인아트 SVG -->
+                <svg class="w-24 h-16" viewBox="0 0 112 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M14 40V52C14 60.284 32.804 66 56 66C79.196 66 98 60.284 98 52V40" fill="#E5E7EB" stroke="#1E241E" stroke-width="3.2"/>
+                  <ellipse cx="56" cy="40" rx="42" ry="14" fill="#FFFFFF" stroke="#1E241E" stroke-width="3.2"/>
+                  <ellipse cx="56" cy="41" rx="31" ry="9" fill="#F3F4F6" stroke="#1E241E" stroke-width="2.4"/>
+                  <path d="M47 52C50 53.5 62 53.5 65 52" stroke="#1E241E" stroke-width="2.6" stroke-linecap="round"/>
+                  <circle cx="44" cy="42" r="1.8" fill="#6B7280"/>
+                  <circle cx="51" cy="44" r="1.5" fill="#6B7280"/>
+                  <circle cx="58" cy="42" r="2.2" fill="#4B5563"/>
+                  <!-- 꽁초 본체 -->
+                  <path d="M58 41L66 25L80 12C82 10 86 11 88 13.5C90 16 89.5 19.5 87.5 21.5L74 33L67 43C65 45 59 44 58 41Z" fill="#FFFFFF" stroke="#1E241E" stroke-width="3" stroke-linejoin="round"/>
+                  <!-- 필터 -->
+                  <path d="M74.5 17.5L80 12C82 10 86 11 88 13.5C90 16 89.5 19.5 87.5 21.5L82 26.5L74.5 17.5Z" fill="#FDE68A" stroke="#1E241E" stroke-width="2.5" stroke-linejoin="round"/>
+                  <!-- 청결 반짝임 -->
+                  <path d="M22 18L24 13L26 18L31 20L26 22L24 27L22 22L17 20L22 18Z" fill="#74B838"/>
+                </svg>
+              </div>
+
+              <span class="text-xs font-extrabold text-ink bg-marker-light border border-marker-deep/50 px-3.5 py-1.5 rounded-full">
+                탭하여 부스 안 재떨이 꽁초 촬영 / 업로드
+              </span>
+              <p class="mt-1.5 text-[11px] text-ink/50 font-medium">부스 내부 재떨이에 버린 인증 사진 1장이 필요합니다</p>
+            </div>
+
+            <!-- 업로드 완료 미리보기 -->
+            <div id="photo-preview-state" class="hidden p-3.5 pt-6">
+              <div class="relative rounded-xl overflow-hidden border-2 border-ink/20 bg-gray-900 aspect-[16/10] flex items-center justify-center">
+                <img id="photo-preview-img" src="" alt="업로드된 재떨이 인증 사진" class="w-full h-full object-cover" />
+                <span class="absolute top-2.5 left-2.5 inline-flex items-center gap-1 bg-marker-deep text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  인증 사진 등록됨
+                </span>
+                <button
+                  type="button"
+                  onclick="triggerPhotoInput()"
+                  class="absolute bottom-2.5 right-2.5 bg-white/95 hover:bg-white text-ink text-xs font-extrabold px-3 py-1.5 rounded-xl border border-ink/30 shadow-sm transition"
+                >
+                  🔄 다시 찍기
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 발표/데모용 샘플 인증 사진 생성 버튼 -->
+          <div class="mt-2.5 flex justify-end">
+            <button
+              type="button"
+              onclick="generateDemoSamplePhoto()"
+              class="inline-flex items-center gap-1.5 text-[12px] font-bold text-marker-dark hover:text-ink bg-marker-light hover:bg-marker/60 border border-marker-deep/50 px-3 py-1.5 rounded-xl transition"
+            >
+              <span>📷 발표/테스트용 샘플 사진 넣기</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. 학번 입력 -->
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <label for="student-id-input" class="text-[15px] font-black text-ink">학번 입력</label>
+            <span id="student-live-points-pill" class="hidden text-[11px] font-extrabold text-marker-dark bg-marker-light border border-marker-deep/40 px-2.5 py-0.5 rounded-full truncate"></span>
+          </div>
+          <input
+            id="student-id-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="10"
+            placeholder="예: 20231234"
+            oninput="handleStudentIdInput(this)"
+            class="w-full px-4 py-3.5 rounded-xl border-2 border-ink bg-white text-[16px] font-bold text-ink placeholder-ink/35 focus:outline-none focus:ring-4 focus:ring-marker-light transition"
+          />
+          <p id="student-id-helper" class="mt-1.5 text-xs text-ink/55 font-medium">
+            숫자 7~10자리 학번을 입력하면 포인트가 자동으로 누적됩니다.
+          </p>
+        </div>
+
+        <!-- 인라인 유효성 오류 메시지 -->
+        <div id="form-error-box" class="hidden rounded-xl bg-red-50 border-2 border-red-300 px-3.5 py-2.5 text-xs font-bold text-red-700 flex items-center gap-2">
+          <span>⚠️</span>
+          <span id="form-error-text">입력 내용을 확인해 주세요.</span>
+        </div>
+
+        <!-- 5. 메인 제출 CTA 버튼 -->
+        <button
+          id="submit-vote-btn"
+          type="button"
+          onclick="submitVote()"
+          class="tactile-btn w-full py-4 px-5 rounded-2xl border-2 border-ink bg-gradient-to-b from-marker to-marker-deep hover:brightness-105 text-ink text-[18px] font-black tracking-tight flex items-center justify-center gap-2"
+        >
+          <span>투표하고 100P 적립하기</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </button>
+
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- TAB 2: 실시간 현황 (독립 탭 — 투표 현황 + 부스 랭킹 + 익명 피드)   -->
+      <!-- ================================================================ -->
+      <section id="view-live" class="hidden px-5 pb-6 space-y-4 animate-tab-in">
+
+        <!-- 1. 실시간 투표 결과 카드 -->
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-black text-marker-dark bg-marker-light border border-marker-deep/40 px-2.5 py-0.5 rounded-full">
+              <span class="w-2 h-2 rounded-full bg-marker-deep animate-pulse"></span>
+              LIVE 투표 현황
+            </span>
+            <span id="live-total-votes-badge" class="text-xs font-extrabold text-ink/60">총 156명 참여</span>
+          </div>
+
+          <!-- 활성 질문 & 주제 -->
+          <p id="live-question-prompt" class="text-xs font-extrabold text-marker-dark mb-0.5">Q. 이 둘 중 더 좋은 것은?</p>
+          <h3 id="live-topic-title" class="text-[16px] font-black text-ink mb-4 leading-snug">
+            교수님 휴강 공지 vs 시험 범위 축소
+          </h3>
+
+          <!-- 가로형 프로그레스 바 비교 -->
+          <div class="space-y-3.5">
+            <!-- 옵션 A -->
+            <div>
+              <div class="flex items-center justify-between text-sm font-bold mb-1.5">
+                <span class="text-ink flex items-center gap-1.5 min-w-0 pr-2">
+                  <span class="w-5 h-5 rounded-md bg-marker text-ink border border-ink text-[11px] font-black inline-flex items-center justify-center shrink-0">A</span>
+                  <span id="live-label-A" class="truncate font-extrabold">교수님 휴강 공지</span>
+                </span>
+                <span class="text-marker-dark font-black shrink-0">
+                  <span id="live-pct-A">54%</span>
+                  <span id="live-cnt-A" class="text-xs font-bold text-ink/45 ml-1">(84표)</span>
+                </span>
+              </div>
+              <div class="w-full h-4 bg-paper rounded-full overflow-hidden border-2 border-ink/20">
+                <div id="live-bar-A" class="h-full bg-gradient-to-r from-marker to-marker-deep rounded-full transition-all duration-700" style="width: 54%"></div>
+              </div>
+            </div>
+
+            <!-- 옵션 B -->
+            <div>
+              <div class="flex items-center justify-between text-sm font-bold mb-1.5">
+                <span class="text-ink flex items-center gap-1.5 min-w-0 pr-2">
+                  <span class="w-5 h-5 rounded-md bg-marker-light text-ink border border-ink text-[11px] font-black inline-flex items-center justify-center shrink-0">B</span>
+                  <span id="live-label-B" class="truncate font-extrabold">시험 범위 축소</span>
+                </span>
+                <span class="text-emerald-700 font-black shrink-0">
+                  <span id="live-pct-B">46%</span>
+                  <span id="live-cnt-B" class="text-xs font-bold text-ink/45 ml-1">(72표)</span>
+                </span>
+              </div>
+              <div class="w-full h-4 bg-paper rounded-full overflow-hidden border-2 border-ink/20">
+                <div id="live-bar-B" class="h-full bg-gradient-to-r from-emerald-300 to-emerald-500 rounded-full transition-all duration-700" style="width: 46%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 캠퍼스 클린 요약 칩 3개 -->
+          <div class="mt-4 pt-3.5 border-t border-ink/10 grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-xl bg-paper border border-ink/15 p-2">
+              <p class="text-[10px] font-bold text-ink/55">총 참여 수</p>
+              <p id="chip-total-votes" class="text-sm font-black text-ink mt-0.5">156명</p>
+            </div>
+            <div class="rounded-xl bg-marker-light/70 border border-marker-deep/30 p-2">
+              <p class="text-[10px] font-bold text-marker-dark">오늘 인증 꽁초</p>
+              <p id="chip-today-butts" class="text-sm font-black text-marker-dark mt-0.5">42개</p>
+            </div>
+            <div class="rounded-xl bg-paper border border-ink/15 p-2">
+              <p class="text-[10px] font-bold text-ink/55">투기 감소율</p>
+              <p id="chip-litter-drop" class="text-sm font-black text-emerald-700 mt-0.5">-46%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 캠퍼스 흡연부스별 참여 랭킹 -->
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-[15px] font-black text-ink flex items-center gap-1.5">
+              <span>🏆 캠퍼스 부스별 참여 랭킹</span>
+            </h3>
+            <span class="text-[11px] font-bold text-ink/50">이번 주 기준</span>
+          </div>
+          <div id="booth-ranking-list" class="space-y-3">
+            <!-- JS로 동적 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 3. 실시간 익명 인증 피드 -->
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-[15px] font-black text-ink flex items-center gap-1.5">
+              <span>⚡ 실시간 부스 인증 피드</span>
+            </h3>
+            <span class="text-[11px] font-extrabold text-marker-dark bg-marker-light px-2 py-0.5 rounded-full">익명 보호</span>
+          </div>
+          <ul id="live-feed-list" class="divide-y divide-ink/10">
+            <!-- JS로 동적 렌더링 -->
+          </ul>
+        </div>
+
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- TAB 3: 내 포인트 (독립 탭 — 조회 + 에코 등급 + 리워드 + 내역)     -->
+      <!-- ================================================================ -->
+      <section id="view-points" class="hidden px-5 pb-6 space-y-4 animate-tab-in">
+
+        <!-- 1. 학번 조회 바 + 샘플 학번 원탭 버튼 -->
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <label for="points-lookup-input" class="block text-[14px] font-black text-ink mb-2">
+            🔍 학번으로 내 포인트 조회
+          </label>
+          <div class="flex gap-2">
+            <input
+              id="points-lookup-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="10"
+              placeholder="학번 입력 (예: 20231234)"
+              onkeydown="if(event.key==='Enter') renderMyPointsView()"
+              class="flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border-2 border-ink bg-paper text-sm font-bold text-ink placeholder-ink/35 focus:outline-none focus:ring-4 focus:ring-marker-light"
+            />
+            <button
+              type="button"
+              onclick="renderMyPointsView()"
+              class="tactile-btn px-4 py-2.5 rounded-xl border-2 border-ink bg-marker hover:bg-marker-deep text-ink text-sm font-black shrink-0"
+            >
+              조회
+            </button>
+          </div>
+
+          <!-- 원탭 샘플 학번 칩 -->
+          <div class="mt-2.5 flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              onclick="loadSampleStudent('20231234')"
+              class="text-[11px] font-extrabold text-marker-dark bg-marker-light hover:bg-marker/60 border border-marker-deep/40 px-2.5 py-1 rounded-full transition"
+            >
+              ⚡ 샘플 학번(20231234) 불러오기
+            </button>
+            <button
+              type="button"
+              onclick="loadSampleStudent('20220518')"
+              class="text-[11px] font-bold text-ink/70 bg-gray-100 hover:bg-gray-200 border border-ink/15 px-2.5 py-1 rounded-full transition"
+            >
+              ☕ 교환 가능 체험(20220518 · 1,100P)
+            </button>
+          </div>
+        </div>
+
+        <!-- 조회 결과 컨테이너 (대시보드 + 리워드 교환 + 인증 내역) -->
+        <div id="my-points-content" class="space-y-4">
+          <!-- JS로 동적 렌더링 -->
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- 하단 푸터: 접이식 아이디어톤 발표용 데모 설정 패널                 -->
+    <!-- ================================================================ -->
+    <footer class="bg-white border-t-2 border-ink/15 px-5 py-4">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <p class="text-xs font-black text-ink">스모크 보트 · Clean Campus</p>
+          <p class="text-[11px] text-ink/50 font-medium truncate">부스 안 흡연 에티켓 리워드 캠페인</p>
+        </div>
+        <button
+          id="demo-panel-toggle-btn"
+          type="button"
+          onclick="toggleDemoPanel()"
+          aria-expanded="false"
+          class="px-3 py-2 rounded-xl border-2 border-ink/25 bg-paper hover:bg-marker-light text-ink text-xs font-extrabold transition flex items-center gap-1.5 shrink-0"
+        >
+          <span>⚙️ 아이디어톤 발표용 데모 설정</span>
+          <svg id="demo-chevron-icon" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+      </div>
+
+      <!-- 접이식 데모 컨트롤 패널 본문 -->
+      <div id="demo-control-panel" class="hidden mt-4 pt-4 border-t-2 border-dashed border-ink/15 space-y-4 animate-tab-in">
+
+        <!-- 1. 프리셋 주제 원클릭 전환 (질문 문구 포함) -->
+        <div>
+          <p class="text-xs font-black text-ink mb-2">📌 발표용 추천 투표 주제 프리셋</p>
+          <div class="space-y-1.5">
+            <button
+              type="button"
+              onclick="applyPresetTopic(0)"
+              class="w-full text-left px-3 py-2 rounded-xl border border-ink/20 bg-paper hover:bg-marker-light transition"
+            >
+              <p class="text-[11px] font-extrabold text-marker-dark">1. Q. 이 둘 중 더 좋은 것은?</p>
+              <p class="text-xs font-bold text-ink">교수님 휴강 공지 vs 시험 범위 축소</p>
+            </button>
+            <button
+              type="button"
+              onclick="applyPresetTopic(1)"
+              class="w-full text-left px-3 py-2 rounded-xl border border-ink/20 bg-paper hover:bg-marker-light transition"
+            >
+              <p class="text-[11px] font-extrabold text-marker-dark">2. Q. 이 둘 중 더 참기 힘든 것은?</p>
+              <p class="text-xs font-bold text-ink">매일 1교시 풀강 vs 6시간 연속 연강</p>
+            </button>
+            <button
+              type="button"
+              onclick="applyPresetTopic(2)"
+              class="w-full text-left px-3 py-2 rounded-xl border border-ink/20 bg-paper hover:bg-marker-light transition"
+            >
+              <p class="text-[11px] font-extrabold text-marker-dark">3. Q. 둘 중 더 선호하는 팀플은?</p>
+              <p class="text-xs font-bold text-ink">말 없는 잠수 팀원 vs 고집 센 폭주 팀원</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. 커스텀 투표 주제 실시간 편집기 -->
+        <div class="rounded-xl bg-paper border border-ink/15 p-3 space-y-2.5">
+          <p class="text-xs font-black text-ink">✏️ 커스텀 주제 직접 편집 (실시간 반영)</p>
+          <div>
+            <label for="demo-question-input" class="block text-[11px] font-bold text-ink/65 mb-1">질문 문구 (무엇을 고르는지 안내)</label>
+            <input
+              id="demo-question-input"
+              type="text"
+              oninput="handleLiveCustomTopicEdit()"
+              class="w-full px-3 py-2 rounded-lg border border-ink/30 bg-white text-xs font-bold text-ink focus:outline-none focus:border-ink"
+              placeholder="예: Q. 이 둘 중 더 좋은 것은?"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="demo-opt-a-input" class="block text-[11px] font-bold text-ink/65 mb-1">선택지 A</label>
+              <input
+                id="demo-opt-a-input"
+                type="text"
+                oninput="handleLiveCustomTopicEdit()"
+                class="w-full px-3 py-2 rounded-lg border border-ink/30 bg-white text-xs font-bold text-ink focus:outline-none focus:border-ink"
+              />
+            </div>
+            <div>
+              <label for="demo-opt-b-input" class="block text-[11px] font-bold text-ink/65 mb-1">선택지 B</label>
+              <input
+                id="demo-opt-b-input"
+                type="text"
+                oninput="handleLiveCustomTopicEdit()"
+                class="w-full px-3 py-2 rounded-lg border border-ink/30 bg-white text-xs font-bold text-ink focus:outline-none focus:border-ink"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. QR 부스 위치 시뮬레이션 드롭다운 -->
+        <div>
+          <label for="demo-booth-select" class="block text-xs font-black text-ink mb-1.5">📍 시뮬레이션 QR 흡연부스 위치</label>
+          <select
+            id="demo-booth-select"
+            onchange="handleBoothSelectChange(this.value)"
+            class="w-full px-3 py-2.5 rounded-xl border-2 border-ink/25 bg-white text-xs font-extrabold text-ink focus:outline-none focus:border-ink"
+          >
+            <option value="공학관 1호 부스">공학관 1호 부스</option>
+            <option value="중앙도서관 뒤편 부스">중앙도서관 뒤편 부스</option>
+            <option value="학생회관 옆 부스">학생회관 옆 부스</option>
+            <option value="경영관 앞 부스">경영관 앞 부스</option>
+          </select>
+
+          <!-- QR URL 복사 박스 -->
+          <div class="mt-2 p-2.5 rounded-xl bg-paper border border-ink/15 flex items-center justify-between gap-2">
+            <code id="demo-qr-url-preview" class="text-[10.5px] text-ink/70 truncate font-mono"></code>
+            <button
+              type="button"
+              onclick="copySimulatedQrUrl()"
+              class="text-[11px] font-extrabold text-marker-dark hover:underline shrink-0"
+            >
+              QR 링크 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. 데모 데이터 초기화 (2단계 인라인 확인) -->
+        <div class="pt-2 border-t border-ink/10">
+          <div id="reset-step-1" class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-ink/55">발표 리허설 후 초기 상태로 되돌리기</span>
+            <button
+              type="button"
+              onclick="toggleResetConfirm(true)"
+              class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-xs font-extrabold text-red-600 transition"
+            >
+              데모 데이터 초기화
+            </button>
+          </div>
+          <div id="reset-step-2" class="hidden rounded-xl bg-red-50 border border-red-300 p-3 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-red-700">모든 투표·포인트 기록을 초기화할까요?</span>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" onclick="toggleResetConfirm(false)" class="px-2.5 py-1 rounded-lg bg-white border border-gray-300 text-xs font-bold text-ink/70">취소</button>
+              <button type="button" onclick="resetDemoData()" class="px-2.5 py-1 rounded-lg bg-red-600 text-white text-xs font-extrabold">확인</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ================================================================ -->
+  <!-- MODAL 1: 투표 완료 & +100P 적립 축하 모달                         -->
+  <!-- ================================================================ -->
+  <div id="success-modal" class="hidden fixed inset-0 z-40 bg-ink/60 backdrop-blur-[2px] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="relative w-full max-w-[400px] bg-white rounded-[28px] border-[2.5px] border-ink shadow-2xl overflow-hidden animate-pop-in my-auto">
+      <!-- 콘페티 레이어 -->
+      <div id="confetti-container" class="absolute inset-0 overflow-hidden pointer-events-none z-20"></div>
+
+      <!-- 상단 축하 영역 -->
+      <div class="bg-gradient-to-b from-marker-light to-white px-5 pt-6 pb-4 text-center">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-marker border-2 border-ink shadow-[0_3px_0_#1e241e] flex items-center justify-center text-2xl mb-3">
+          🎉
+        </div>
+        <h2 class="text-[22px] font-black text-ink">+100P 적립 완료!</h2>
+        <p class="text-xs font-bold text-ink/65 mt-1">
+          부스 안 에티켓과 깨끗한 캠퍼스 만들기에 동참해 주셨어요 💚
+        </p>
+      </div>
+
+      <div class="px-5 pb-5 space-y-3.5">
+        <!-- 누적 포인트 요약 -->
+        <div class="rounded-2xl bg-marker-light/70 border border-marker-deep/40 p-3.5 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] font-bold text-ink/60">학번 <strong id="modal-student-id" class="text-ink">20231234</strong> 누적 포인트</p>
+            <p id="modal-rank-badge" class="text-xs font-extrabold text-marker-dark mt-0.5">🌱 캠퍼스 매너 새싹</p>
+          </div>
+          <p id="modal-total-points" class="text-2xl font-black text-ink">300P</p>
+        </div>
+
+        <!-- 실시간 득표율 미니 프리뷰 -->
+        <div class="rounded-2xl border border-ink/15 p-3.5 bg-paper">
+          <div class="flex items-center justify-between mb-2">
+            <span id="modal-question-label" class="text-[11px] font-extrabold text-marker-dark truncate pr-2">Q. 이 둘 중 더 좋은 것은?</span>
+            <span id="modal-total-votes" class="text-[11px] font-bold text-ink/50 shrink-0">157명 참여</span>
+          </div>
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-xs font-extrabold mb-1">
+                <span id="modal-label-A" class="text-ink truncate pr-2">교수님 휴강 공지</span>
+                <span id="modal-pct-A" class="text-marker-dark shrink-0">54%</span>
+              </div>
+              <div class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-ink/15">
+                <div id="modal-bar-A" class="h-full bg-marker-deep rounded-full transition-all duration-700" style="width: 54%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-extrabold mb-1">
+                <span id="modal-label-B" class="text-ink truncate pr-2">시험 범위 축소</span>
+                <span id="modal-pct-B" class="text-emerald-700 shrink-0">46%</span>
+              </div>
+              <div class="w-full h-2.5 bg-white rounded-full overflow-hidden border border-ink/15">
+                <div id="modal-bar-B" class="h-full bg-emerald-400 rounded-full transition-all duration-700" style="width: 46%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 인증 스탬프 영수증 카드 -->
+        <div class="relative rounded-2xl border-2 border-dashed border-ink/25 bg-white p-3 flex items-center gap-3">
+          <img id="modal-stamp-thumb" src="" alt="인증 썸네일" class="w-13 h-13 w-14 h-14 rounded-xl object-cover border border-ink/20 shrink-0 bg-gray-100" />
+          <div class="min-w-0 flex-1 text-xs space-y-0.5">
+            <p id="modal-stamp-booth" class="font-black text-ink truncate">📍 공학관 1호 부스</p>
+            <p id="modal-stamp-time" class="text-ink/50 font-semibold">2026.11.23 16:26</p>
+            <p id="modal-stamp-choice" class="text-marker-dark font-extrabold truncate">선택: 교수님 휴강 공지</p>
+          </div>
+          <div class="animate-stamp shrink-0 w-13 h-13 w-14 h-14 rounded-full border-2 border-marker-deep bg-marker-light text-marker-dark flex flex-col items-center justify-center leading-none select-none">
+            <span class="text-[9px] font-black">CLEAN</span>
+            <span class="text-[11px] font-black mt-0.5">인증완료</span>
+          </div>
+        </div>
+
+        <!-- 빠른 이동 버튼 (실시간 현황 보기 / 내 포인트 확인) -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button
+            type="button"
+            onclick="closeSuccessModal('live')"
+            class="py-3 px-2 rounded-xl border-2 border-ink bg-white hover:bg-paper text-ink text-[13px] font-black transition"
+          >
+            📊 실시간 현황 보기
+          </button>
+          <button
+            type="button"
+            onclick="closeSuccessModal('points')"
+            class="tactile-btn py-3 px-2 rounded-xl border-2 border-ink bg-marker hover:bg-marker-deep text-ink text-[13px] font-black transition"
+          >
+            🪙 내 포인트 확인
+          </button>
+        </div>
+        <button
+          type="button"
+          onclick="closeSuccessModal(null)"
+          class="w-full py-2 text-xs font-bold text-ink/50 hover:text-ink transition"
+        >
+          닫고 계속 투표 시연하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- MODAL 2: 리워드 모바일 교환권 발급 시뮬레이션 모달                -->
+  <!-- ================================================================ -->
+  <div id="coupon-modal" class="hidden fixed inset-0 z-40 bg-ink/60 backdrop-blur-[2px] flex items-center justify-center p-4">
+    <div class="w-full max-w-[370px] bg-white rounded-[28px] border-[2.5px] border-ink shadow-2xl overflow-hidden animate-pop-in">
+      <div class="bg-marker-light border-b-2 border-dashed border-ink/25 px-5 py-5 text-center">
+        <span class="inline-block text-[11px] font-black bg-white border border-ink px-3 py-0.5 rounded-full text-ink mb-2">
+          🎟️ 스모크 보트 캠퍼스 리워드 쿠폰
+        </span>
+        <div id="coupon-emoji" class="text-4xl my-1">☕</div>
+        <h3 id="coupon-title" class="text-lg font-black text-ink">학생회관 카페 아메리카노 1잔</h3>
+        <p id="coupon-deduct-info" class="text-xs font-bold text-marker-dark mt-1">1,000P 사용 완료</p>
+      </div>
+
+      <div class="p-5 text-center space-y-4">
+        <!-- 모의 바코드 박스 -->
+        <div class="rounded-2xl border-2 border-ink/20 bg-paper p-4">
+          <div class="barcode-pattern w-full h-14 rounded-md opacity-90"></div>
+          <p id="coupon-code" class="mt-2 font-mono text-sm font-black tracking-widest text-ink">SV-2026-8491-02</p>
+          <p id="coupon-meta" class="text-[11px] text-ink/55 font-semibold mt-1">학번 20220518 · 유효기간 30일</p>
+        </div>
+
+        <p class="text-[11px] text-ink/60 leading-relaxed">
+          매장 결제 시 위 바코드를 제시해 주세요.<br/>
+          <span class="text-ink/45">(아이디어톤 시연용 모의 쿠폰 화면입니다)</span>
+        </p>
+
+        <button
+          type="button"
+          onclick="closeCouponModal()"
+          class="tactile-btn w-full py-3.5 rounded-2xl border-2 border-ink bg-marker text-ink text-sm font-black"
+        >
+          쿠폰함 확인 완료
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- JavaScript 상태 관리 및 인터랙션 로직                             -->
+  <!-- ================================================================ -->
+  <script>
+    /**
+     * 스모크 보트 (Smoke Vote) 통합 애플리케이션 스크립트
+     * - localStorage 기반 영속 상태 관리
+     * - 3개 독립 탭(투표하기 / 실시간 현황 / 내 포인트)
+     * - URL 파라미터(?booth=) 자동 인식 및 데모 시뮬레이션 지원
+     */
+    const STORAGE_KEY = 'smoke_vote_campus_v2';
+    const POINTS_PER_VOTE = 100;
+
+    // 발표용 추천 투표 주제 프리셋 (모두 질문 문구 포함)
+    const TOPIC_PRESETS = [
+      {
+        question: 'Q. 이 둘 중 더 좋은 것은?',
+        optionA: '교수님 휴강 공지',
+        optionB: '시험 범위 축소',
+      },
+      {
+        question: 'Q. 이 둘 중 더 참기 힘든 것은?',
+        optionA: '매일 1교시 풀강',
+        optionB: '6시간 연속 연강',
+      },
+      {
+        question: 'Q. 둘 중 더 선호하는 팀플은?',
+        optionA: '말 없는 잠수 팀원',
+        optionB: '고집 센 폭주 팀원',
+      },
+    ];
+
+    // 캠퍼스 리워드 목록
+    const REWARD_CATALOG = [
+      { id: 'conv', emoji: '🏪', title: '교내 편의점 1,000원 상품권', cost: 500, desc: '교내 CU · GS25 즉시 사용' },
+      { id: 'cafe', emoji: '☕', title: '학생회관 카페 아메리카노 1잔', cost: 1000, desc: 'ICE / HOT 선택 가능' },
+      { id: 'meal', emoji: '🍱', title: '학식 식권 1매', cost: 2000, desc: '학생식당 전 메뉴 사용 가능' },
+    ];
+
+    // 세션 동안 제출한 인증 사진 썸네일을 메모리에 보관 (localStorage 용량 초과 방지)
+    const sessionThumbnails = {};
+
+    /**
+     * 초기 캠퍼스 시드 데이터 생성
+     */
+    function createDefaultData() {
+      return {
+        topic: { ...TOPIC_PRESETS[0] },
+        votes: {
+          A: 84,
+          B: 72,
+        },
+        todayVerifiedButts: 42,
+        boothLocation: '공학관 1호 부스',
+        boothStats: {
+          '공학관 1호 부스': 61,
+          '중앙도서관 뒤편 부스': 43,
+          '학생회관 옆 부스': 32,
+          '경영관 앞 부스': 20,
+        },
+        liveFeed: [
+          {
+            maskedId: '2024****',
+            booth: '공학관 1호 부스',
+            choiceLabel: '교수님 휴강 공지',
+            timeLabel: '2분 전',
+          },
+          {
+            maskedId: '2021****',
+            booth: '중앙도서관 뒤편 부스',
+            choiceLabel: '시험 범위 축소',
+            timeLabel: '7분 전',
+          },
+          {
+            maskedId: '2023****',
+            booth: '학생회관 옆 부스',
+            choiceLabel: '교수님 휴강 공지',
+            timeLabel: '14분 전',
+          },
+          {
+            maskedId: '2022****',
+            booth: '경영관 앞 부스',
+            choiceLabel: '시험 범위 축소',
+            timeLabel: '23분 전',
+          },
+          {
+            maskedId: '2025****',
+            booth: '공학관 1호 부스',
+            choiceLabel: '교수님 휴강 공지',
+            timeLabel: '38분 전',
+          },
+        ],
+        students: {
+          '20231234': {
+            points: 200,
+            visits: 2,
+            redeemedCoupons: [],
+            history: [
+              {
+                id: 'seed-1',
+                timestamp: '2026.11.22 14:10',
+                choiceLabel: '교수님 휴강 공지',
+                booth: '공학관 1호 부스',
+                points: 100,
+              },
+              {
+                id: 'seed-2',
+                timestamp: '2026.11.21 11:25',
+                choiceLabel: '시험 범위 축소',
+                booth: '중앙도서관 뒤편 부스',
+                points: 100,
+              },
+            ],
+          },
+          '20220518': {
+            points: 1100,
+            visits: 11,
+            redeemedCoupons: [],
+            history: [
+              {
+                id: 'seed-3',
+                timestamp: '2026.11.23 13:05',
+                choiceLabel: '교수님 휴강 공지',
+                booth: '학생회관 옆 부스',
+                points: 100,
+              },
+              {
+                id: 'seed-4',
+                timestamp: '2026.11.22 16:40',
+                choiceLabel: '교수님 휴강 공지',
+                booth: '공학관 1호 부스',
+                points: 100,
+              },
+            ],
+          },
+        },
+      };
+    }
+
+    // 런타임 상태
+    let appData = loadAppData();
+    let selectedChoice = null;
+    let uploadedPhotoDataUrl = '';
+    let lastActiveStudentId = '20231234';
+    let currentTab = 'vote';
+
+    /**
+     * localStorage 로드 (예외 안전)
+     */
+    function loadAppData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          const initial = createDefaultData();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+          return initial;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed.topic || !parsed.topic.question || !parsed.boothStats || !parsed.liveFeed) {
+          return createDefaultData();
+        }
+        return parsed;
+      } catch (err) {
+        console.error('상태 로드 실패:', err);
+        return createDefaultData();
+      }
+    }
+
+    /**
+     * localStorage 저장
+     */
+    function saveAppData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (err) {
+        console.error('상태 저장 실패:', err);
+      }
+    }
+
+    /**
+     * URL 쿼리 파라미터(?booth=...) 반영
+     */
+    function applyBoothFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const boothParam = params.get('booth');
+        if (boothParam && boothParam.trim().length > 0) {
+          const cleanBooth = boothParam.trim();
+          appData.boothLocation = cleanBooth;
+          if (typeof appData.boothStats[cleanBooth] !== 'number') {
+            appData.boothStats[cleanBooth] = 12;
+          }
+          saveAppData();
+        }
+      } catch (err) {
+        // 파라미터 파싱 실패 무시
+      }
+    }
+
+    /**
+     * 전체 화면 동기화 렌더링
+     */
+    function renderAll() {
+      const { question, optionA, optionB } = appData.topic;
+
+      // 상단 QR 부스 배지
+      document.getElementById('booth-location-label').textContent = appData.boothLocation;
+
+      // TAB 1: 투표 화면
+      document.getElementById('vote-question-prompt').textContent = question;
+      document.getElementById('vote-topic-matchup').innerHTML =
+        `${escapeHtml(optionA)} <span class="text-marker-deep mx-0.5">vs</span> ${escapeHtml(optionB)}`;
+      document.getElementById('choice-label-A').textContent = optionA;
+      document.getElementById('choice-label-B').textContent = optionB;
+
+      // TAB 2: 실시간 현황
+      renderLiveTab();
+
+      // TAB 3: 내 포인트 (조회 입력창이 비어있지 않으면 갱신)
+      if (currentTab === 'points') {
+        renderMyPointsView(true);
+      }
+
+      // 데모 설정 컨트롤 값 동기화
+      syncDemoControlInputs();
+    }
+
+    /**
+     * 3탭 전환 핸들러 ('vote' | 'live' | 'points')
+     */
+    function switchTab(tabName) {
+      currentTab = tabName;
+      const tabs = ['vote', 'live', 'points'];
+
+      tabs.forEach((key) => {
+        const viewEl = document.getElementById(`view-${key}`);
+        const btnEl = document.getElementById(`tab-btn-${key}`);
+        const isActive = key === tabName;
+
+        viewEl.classList.toggle('hidden', !isActive);
+        if (isActive) {
+          btnEl.className = 'py-2.5 px-1.5 rounded-xl text-[13px] font-black transition-all bg-marker text-ink border border-ink shadow-[0_2px_0_#1e241e]';
+        } else {
+          btnEl.className = 'py-2.5 px-1.5 rounded-xl text-[13px] font-bold transition-all text-ink/60 hover:text-ink hover:bg-marker-light/50';
+        }
+      });
+
+      if (tabName === 'live') {
+        renderLiveTab();
+      } else if (tabName === 'points') {
+        const lookupInput = document.getElementById('points-lookup-input');
+        if (!lookupInput.value.trim() && lastActiveStudentId) {
+          lookupInput.value = lastActiveStudentId;
+        }
+        renderMyPointsView(true);
+      }
+    }
+
+    /**
+     * TAB 1: 이지선다 옵션 선택
+     */
+    function selectOption(choice) {
+      selectedChoice = choice;
+      hideFormError();
+
+      ['A', 'B'].forEach((key) => {
+        const btn = document.getElementById(`choice-btn-${key}`);
+        const check = document.getElementById(`choice-check-${key}`);
+        const tag = document.getElementById(`choice-tag-${key}`);
+        const isSelected = key === choice;
+
+        btn.setAttribute('aria-pressed', String(isSelected));
+        if (isSelected) {
+          btn.classList.add('sketch-choice-selected');
+          check.classList.remove('hidden');
+          tag.className = 'text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-marker text-ink border border-ink/40';
+        } else {
+          btn.classList.remove('sketch-choice-selected');
+          check.classList.add('hidden');
+          tag.className = 'text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-ink/60';
+        }
+      });
+    }
+
+    /**
+     * TAB 1: 사진 파일 업로드 처리
+     */
+    function triggerPhotoInput() {
+      document.getElementById('photo-file-input').click();
+    }
+
+    function handlePhotoFileChange(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('이미지 파일만 업로드할 수 있습니다.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setUploadedPhoto(e.target.result);
+        showToast('재떨이 인증 사진이 등록되었습니다!', 'success');
+      };
+      reader.onerror = function () {
+        showToast('사진을 읽는 중 오류가 발생했습니다.', 'error');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setUploadedPhoto(dataUrl) {
+      uploadedPhotoDataUrl = dataUrl;
+      hideFormError();
+      document.getElementById('photo-preview-img').src = dataUrl;
+      document.getElementById('photo-empty-state').classList.add('hidden');
+      document.getElementById('photo-preview-state').classList.remove('hidden');
+    }
+
+    /**
+     * TAB 1: 발표/테스트용 리얼 타임스탬프 재떨이 샘플 사진 생성
+     */
+    function generateDemoSamplePhoto() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+
+      // 배경: 흡연부스 내부 스틸 선반 톤
+      const bgGrad = ctx.createLinearGradient(0, 0, 640, 400);
+      bgGrad.addColorStop(0, '#374151');
+      bgGrad.addColorStop(0.55, '#4b5563');
+      bgGrad.addColorStop(1, '#1f2937');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 640, 400);
+
+      // 중앙 조명 하이라이트
+      const lightGrad = ctx.createRadialGradient(320, 185, 20, 320, 195, 240);
+      lightGrad.addColorStop(0, 'rgba(255,255,255,0.22)');
+      lightGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = lightGrad;
+      ctx.fillRect(0, 0, 640, 400);
+
+      // 재떨이 그림자
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.beginPath();
+      ctx.ellipse(325, 232, 138, 66, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 스테인리스 재떨이 림
+      const rimGrad = ctx.createLinearGradient(190, 150, 450, 270);
+      rimGrad.addColorStop(0, '#f3f4f6');
+      rimGrad.addColorStop(0.5, '#9ca3af');
+      rimGrad.addColorStop(1, '#d1d5db');
+      ctx.fillStyle = rimGrad;
+      ctx.beginPath();
+      ctx.ellipse(320, 210, 132, 62, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#6b7280';
+      ctx.stroke();
+
+      // 내부 모래/재 바닥
+      ctx.fillStyle = '#3f3f46';
+      ctx.beginPath();
+      ctx.ellipse(320, 212, 102, 44, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let i = 0; i < 48; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const r = Math.random() * 88;
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(209,213,219,0.55)' : 'rgba(156,163,175,0.45)';
+        ctx.beginPath();
+        ctx.arc(320 + Math.cos(angle) * r, 212 + Math.sin(angle) * (r * 0.4), 1.5 + Math.random() * 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 담배꽁초 2개
+      function drawButt(x, y, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.fillStyle = '#f9fafb';
+        ctx.fillRect(-26, -6, 26, 12);
+        ctx.fillStyle = '#1f2937';
+        ctx.fillRect(-31, -6, 6, 12);
+        ctx.fillStyle = '#eab308';
+        ctx.fillRect(0, -6, 24, 12);
+        ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(-31, -6, 55, 12);
+        ctx.restore();
+      }
+      drawButt(295, 204, -0.35);
+      drawButt(352, 217, 0.55);
+
+      // 카메라 프레임 코너 가이드
+      ctx.strokeStyle = '#a8e063';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(26, 54); ctx.lineTo(26, 26); ctx.lineTo(54, 26);
+      ctx.moveTo(586, 26); ctx.lineTo(614, 26); ctx.lineTo(614, 54);
+      ctx.stroke();
+
+      // 타임스탬프 워터마크
+      const nowStr = formatNowTimestamp();
+      ctx.fillStyle = 'rgba(30, 36, 30, 0.8)';
+      ctx.fillRect(16, 336, 376, 48);
+
+      ctx.fillStyle = '#a8e063';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(`📍 ${appData.boothLocation} · 재떨이 인증`, 28, 358);
+
+      ctx.fillStyle = '#f3f4f6';
+      ctx.font = '13px monospace';
+      ctx.fillText(`SMOKE VOTE CAM · ${nowStr} (DEMO)`, 28, 376);
+
+      setUploadedPhoto(canvas.toDataURL('image/png'));
+      showToast('발표/테스트용 재떨이 인증 샘플 사진이 입력되었습니다!', 'success');
+    }
+
+    /**
+     * TAB 1: 학번 입력 실시간 검증 및 보유 포인트 힌트
+     */
+    function handleStudentIdInput(inputEl) {
+      const digitsOnly = inputEl.value.replace(/[^0-9]/g, '');
+      if (inputEl.value !== digitsOnly) {
+        inputEl.value = digitsOnly;
+      }
+      hideFormError();
+
+      const pill = document.getElementById('student-live-points-pill');
+      const helper = document.getElementById('student-id-helper');
+
+      if (digitsOnly.length >= 7 && digitsOnly.length <= 10) {
+        const student = appData.students[digitsOnly];
+        if (student && student.points > 0) {
+          pill.textContent = `현재 보유: ${student.points.toLocaleString()}P · 이번 투표 시 ${(student.points + POINTS_PER_VOTE).toLocaleString()}P`;
+          pill.classList.remove('hidden');
+          helper.innerHTML = `<span class="text-marker-dark font-bold">재방문 학우님이시네요! 적립 후 바로 리워드 교환 현황을 확인해 보세요.</span>`;
+        } else {
+          pill.textContent = '신규 참여 · 투표 시 100P';
+          pill.classList.remove('hidden');
+          helper.innerHTML = `<span class="text-marker-dark font-bold">첫 참여 학번입니다! 부스 안 에티켓 인증으로 첫 100P를 받아보세요.</span>`;
+        }
+      } else {
+        pill.classList.add('hidden');
+        helper.textContent = '숫자 7~10자리 학번을 입력하면 포인트가 자동으로 누적됩니다.';
+      }
+    }
+
+    /**
+     * TAB 1: 투표 제출 및 +100P 적립 실행
+     */
+    function submitVote() {
+      const studentId = document.getElementById('student-id-input').value.trim();
+
+      if (!selectedChoice) {
+        showFormError('먼저 이번 주 투표 선택지(A 또는 B)를 선택해 주세요.', 'choice-group');
+        return;
+      }
+      if (!uploadedPhotoDataUrl) {
+        showFormError('부스 안 재떨이 꽁초 인증 사진을 업로드해 주세요. (테스트 시 샘플 사진 버튼 이용 가능)', 'photo-upload-frame');
+        return;
+      }
+      if (!/^\d{7,10}$/.test(studentId)) {
+        showFormError('올바른 학번(숫자 7~10자리, 예: 20231234)을 입력해 주세요.', 'student-id-input');
+        return;
+      }
+
+      hideFormError();
+
+      const choiceLabel = selectedChoice === 'A' ? appData.topic.optionA : appData.topic.optionB;
+      const nowStr = formatNowTimestamp();
+      const recordId = `rec-${Date.now()}`;
+
+      // 1) 전체 투표 수 + 오늘 인증 꽁초 수 업데이트
+      appData.votes[selectedChoice] += 1;
+      appData.todayVerifiedButts += 1;
+
+      // 2) 부스별 랭킹 카운트 증가
+      const currentBooth = appData.boothLocation;
+      appData.boothStats[currentBooth] = (appData.boothStats[currentBooth] || 0) + 1;
+
+      // 3) 실시간 익명 피드 최상단 추가
+      appData.liveFeed.unshift({
+        maskedId: maskStudentId(studentId),
+        booth: currentBooth,
+        choiceLabel,
+        timeLabel: '방금 전',
+      });
+      if (appData.liveFeed.length > 15) {
+        appData.liveFeed = appData.liveFeed.slice(0, 15);
+      }
+
+      // 4) 학생 포인트 및 개인 인증 히스토리 저장
+      if (!appData.students[studentId]) {
+        appData.students[studentId] = { points: 0, visits: 0, redeemedCoupons: [], history: [] };
+      }
+      appData.students[studentId].points += POINTS_PER_VOTE;
+      appData.students[studentId].visits += 1;
+      appData.students[studentId].history.unshift({
+        id: recordId,
+        timestamp: nowStr,
+        choiceLabel,
+        booth: currentBooth,
+        points: POINTS_PER_VOTE,
+      });
+      if (appData.students[studentId].history.length > 25) {
+        appData.students[studentId].history = appData.students[studentId].history.slice(0, 25);
+      }
+
+      // 세션 썸네일 저장 (내 포인트 탭 히스토리에서 즉시 표시)
+      sessionThumbnails[recordId] = uploadedPhotoDataUrl;
+
+      lastActiveStudentId = studentId;
+      saveAppData();
+      renderAll();
+
+      // 완료 축하 모달 오픈
+      openSuccessModal(studentId, choiceLabel, nowStr, uploadedPhotoDataUrl);
+
+      // 다음 시연을 위해 투표 입력 폼 리셋
+      resetVoteFormInputs();
+    }
+
+    function resetVoteFormInputs() {
+      selectedChoice = null;
+      ['A', 'B'].forEach((key) => {
+        const btn = document.getElementById(`choice-btn-${key}`);
+        const check = document.getElementById(`choice-check-${key}`);
+        const tag = document.getElementById(`choice-tag-${key}`);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.classList.remove('sketch-choice-selected');
+        check.classList.add('hidden');
+        tag.className = 'text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-ink/60';
+      });
+
+      uploadedPhotoDataUrl = '';
+      document.getElementById('photo-file-input').value = '';
+      document.getElementById('photo-preview-state').classList.add('hidden');
+      document.getElementById('photo-empty-state').classList.remove('hidden');
+
+      handleStudentIdInput(document.getElementById('student-id-input'));
+    }
+
+    /**
+     * 완료 축하 모달 표시 + 콘페티
+     */
+    function openSuccessModal(studentId, choiceLabel, timestamp, thumbUrl) {
+      const totalVotes = appData.votes.A + appData.votes.B;
+      const pctA = totalVotes > 0 ? Math.round((appData.votes.A / totalVotes) * 100) : 50;
+      const pctB = 100 - pctA;
+
+      const student = appData.students[studentId];
+      const rankInfo = getEcoRank(student.points);
+
+      document.getElementById('modal-student-id').textContent = studentId;
+      document.getElementById('modal-total-points').textContent = `${student.points.toLocaleString()}P`;
+      document.getElementById('modal-rank-badge').textContent = rankInfo.badge;
+
+      document.getElementById('modal-question-label').textContent = appData.topic.question;
+      document.getElementById('modal-total-votes').textContent = `${totalVotes.toLocaleString()}명 참여`;
+      document.getElementById('modal-label-A').textContent =
+        appData.topic.optionA + (choiceLabel === appData.topic.optionA ? ' ✓' : '');
+      document.getElementById('modal-label-B').textContent =
+        appData.topic.optionB + (choiceLabel === appData.topic.optionB ? ' ✓' : '');
+      document.getElementById('modal-pct-A').textContent = `${pctA}% (${appData.votes.A}표)`;
+      document.getElementById('modal-pct-B').textContent = `${pctB}% (${appData.votes.B}표)`;
+
+      const barA = document.getElementById('modal-bar-A');
+      const barB = document.getElementById('modal-bar-B');
+      barA.style.width = '0%';
+      barB.style.width = '0%';
+      setTimeout(() => {
+        barA.style.width = `${pctA}%`;
+        barB.style.width = `${pctB}%`;
+      }, 70);
+
+      document.getElementById('modal-stamp-thumb').src = thumbUrl;
+      document.getElementById('modal-stamp-booth').textContent = `📍 ${appData.boothLocation}`;
+      document.getElementById('modal-stamp-time').textContent = timestamp;
+      document.getElementById('modal-stamp-choice').textContent = `선택: ${choiceLabel}`;
+
+      document.getElementById('success-modal').classList.remove('hidden');
+      launchConfetti();
+    }
+
+    function closeSuccessModal(targetTab) {
+      document.getElementById('success-modal').classList.add('hidden');
+      if (targetTab === 'live') {
+        switchTab('live');
+      } else if (targetTab === 'points') {
+        document.getElementById('points-lookup-input').value = lastActiveStudentId;
+        switchTab('points');
+      }
+    }
+
+    function launchConfetti() {
+      const container = document.getElementById('confetti-container');
+      container.innerHTML = '';
+      const colors = ['#a8e063', '#74b838', '#facc15', '#34d399', '#e8f7d4', '#fb923c'];
+
+      for (let i = 0; i < 28; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.backgroundColor = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 0.35}s`;
+        piece.style.width = `${6 + Math.random() * 6}px`;
+        piece.style.height = `${6 + Math.random() * 6}px`;
+        container.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 2200);
+    }
+
+    /**
+     * TAB 2: 실시간 현황 렌더링 (투표 현황 + 부스 랭킹 + 익명 피드)
+     */
+    function renderLiveTab() {
+      const { question, optionA, optionB } = appData.topic;
+      const total = appData.votes.A + appData.votes.B;
+      const pctA = total > 0 ? Math.round((appData.votes.A / total) * 100) : 50;
+      const pctB = 100 - pctA;
+
+      document.getElementById('live-total-votes-badge').textContent = `총 ${total.toLocaleString()}명 참여`;
+      document.getElementById('live-question-prompt').textContent = question;
+      document.getElementById('live-topic-title').textContent = `${optionA} vs ${optionB}`;
+      document.getElementById('live-label-A').textContent = optionA;
+      document.getElementById('live-label-B').textContent = optionB;
+      document.getElementById('live-pct-A').textContent = `${pctA}%`;
+      document.getElementById('live-pct-B').textContent = `${pctB}%`;
+      document.getElementById('live-cnt-A').textContent = `(${appData.votes.A}표)`;
+      document.getElementById('live-cnt-B').textContent = `(${appData.votes.B}표)`;
+      document.getElementById('live-bar-A').style.width = `${pctA}%`;
+      document.getElementById('live-bar-B').style.width = `${pctB}%`;
+
+      // 요약 칩 3개 (투기 감소율은 참여 수에 따라 소폭 상승 연출)
+      const litterDrop = Math.min(72, 46 + Math.floor((total - 156) / 3));
+      document.getElementById('chip-total-votes').textContent = `${total.toLocaleString()}명`;
+      document.getElementById('chip-today-butts').textContent = `${appData.todayVerifiedButts.toLocaleString()}개`;
+      document.getElementById('chip-litter-drop').textContent = `-${Math.max(46, litterDrop)}%`;
+
+      // 부스별 참여 랭킹 정렬 및 렌더링
+      const rankingEntries = Object.entries(appData.boothStats).sort((a, b) => b[1] - a[1]);
+      const maxBoothVotes = rankingEntries.length > 0 ? Math.max(1, rankingEntries[0][1]) : 1;
+      const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+
+      const rankingHtml = rankingEntries
+        .map(([boothName, count], idx) => {
+          const widthPct = Math.max(12, Math.round((count / maxBoothVotes) * 100));
+          const isCurrent = boothName === appData.boothLocation;
+          return `
+            <div>
+              <div class="flex items-center justify-between text-xs font-bold mb-1">
+                <span class="flex items-center gap-1.5 text-ink min-w-0 pr-2">
+                  <span>${medals[idx] || `${idx + 1}.`}</span>
+                  <span class="truncate ${isCurrent ? 'font-black text-marker-dark' : ''}">${escapeHtml(boothName)}</span>
+                  ${isCurrent ? '<span class="text-[10px] font-black px-1.5 py-0.2 rounded-full bg-marker-light text-marker-dark border border-marker-deep/40 shrink-0">현재 위치</span>' : ''}
+                </span>
+                <span class="font-black text-ink shrink-0">${count.toLocaleString()}회</span>
+              </div>
+              <div class="w-full h-2.5 bg-paper rounded-full overflow-hidden border border-ink/15">
+                <div class="h-full rounded-full transition-all duration-500 ${
+                  idx === 0 ? 'bg-marker-deep' : 'bg-marker'
+                }" style="width: ${widthPct}%"></div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+      document.getElementById('booth-ranking-list').innerHTML = rankingHtml;
+
+      // 실시간 익명 인증 피드 렌더링
+      const feedHtml = appData.liveFeed
+        .slice(0, 8)
+        .map((item) => `
+          <li class="py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-2 text-xs">
+            <div class="min-w-0">
+              <p class="font-bold text-ink leading-snug">
+                <span class="font-black">${escapeHtml(item.maskedId)}</span>
+                <span class="text-ink/40 mx-1">·</span>
+                <span>${escapeHtml(item.booth)}</span>
+              </p>
+              <p class="text-[11px] text-ink/65 mt-0.5 truncate">
+                <strong class="text-marker-dark">${escapeHtml(item.choiceLabel)}</strong> 선택
+                <span class="text-ink/35 mx-1">·</span>
+                <span>${escapeHtml(item.timeLabel)}</span>
+              </p>
+            </div>
+            <span class="shrink-0 inline-flex items-center gap-0.5 text-[10px] font-black text-marker-dark bg-marker-light border border-marker-deep/30 px-2 py-0.5 rounded-full">
+              인증완료 ✓
+            </span>
+          </li>
+        `)
+        .join('');
+      document.getElementById('live-feed-list').innerHTML = feedHtml;
+    }
+
+    /**
+     * TAB 3: 샘플 학번 원탭 불러오기
+     */
+    function loadSampleStudent(sampleId) {
+      document.getElementById('points-lookup-input').value = sampleId;
+      renderMyPointsView();
+      showToast(`샘플 학번(${sampleId}) 포인트를 불러왔습니다.`, 'success');
+    }
+
+    /**
+     * 포인트 기준 에코 등급 계산
+     */
+    function getEcoRank(points) {
+      if (points >= 1500) {
+        return { badge: '🌳 캠퍼스 에코 마스터', nextLabel: '최고 등급 달성!', progress: 100 };
+      }
+      if (points >= 500) {
+        return {
+          badge: '🌿 클린 부스 지킴이',
+          nextLabel: `에코 마스터(1,500P)까지 ${(1500 - points).toLocaleString()}P`,
+          progress: Math.min(100, Math.round(((points - 500) / 1000) * 100)),
+        };
+      }
+      return {
+        badge: '🌱 캠퍼스 매너 새싹',
+        nextLabel: `클린 부스 지킴이(500P)까지 ${(500 - points).toLocaleString()}P`,
+        progress: Math.min(100, Math.round((points / 500) * 100)),
+      };
+    }
+
+    /**
+     * TAB 3: 내 포인트 전체 대시보드 + 리워드 교환 + 개인 히스토리 렌더링
+     */
+    function renderMyPointsView(silent = false) {
+      const inputEl = document.getElementById('points-lookup-input');
+      const id = inputEl.value.replace(/[^0-9]/g, '').trim();
+      inputEl.value = id;
+
+      const container = document.getElementById('my-points-content');
+
+      if (!id) {
+        container.innerHTML = `
+          <div class="rounded-2xl border-2 border-dashed border-ink/25 bg-white p-6 text-center space-y-2">
+            <div class="text-3xl">🪙</div>
+            <p class="text-sm font-black text-ink">학번을 입력하고 내 포인트를 확인하세요</p>
+            <p class="text-xs text-ink/55">부스 안에서 투표하고 인증할 때마다 100P가 쌓입니다.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!/^\d{7,10}$/.test(id)) {
+        if (!silent) showToast('학번은 숫자 7~10자리로 입력해 주세요.', 'error');
+        return;
+      }
+
+      lastActiveStudentId = id;
+      const student = appData.students[id];
+
+      if (!student) {
+        container.innerHTML = `
+          <div class="rounded-2xl border-2 border-ink bg-white p-6 text-center shadow-[0_4px_0_#e8f7d4]">
+            <div class="text-3xl mb-2">🌱</div>
+            <p class="text-base font-black text-ink">${escapeHtml(id)} 학번 기록이 아직 없어요</p>
+            <p class="text-xs text-ink/60 mt-1">지금 부스 안에서 첫 투표에 참여하고 100P를 받아보세요!</p>
+            <button
+              type="button"
+              onclick="goVoteWithId('${escapeHtml(id)}')"
+              class="tactile-btn mt-4 px-5 py-2.5 rounded-xl border-2 border-ink bg-marker text-ink text-xs font-black"
+            >
+              🗳️ 지금 100P 적립하러 가기
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const rank = getEcoRank(student.points);
+
+      // 1) 내 포인트 대시보드 카드
+      const dashboardHtml = `
+        <div class="rounded-2xl border-2 border-ink bg-gradient-to-br from-marker-light via-white to-paper p-4 shadow-[0_4px_0_#1e241e]">
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <div>
+              <span class="inline-block text-[11px] font-black text-ink bg-marker border border-ink px-2.5 py-0.5 rounded-full">
+                ${rank.badge}
+              </span>
+              <p class="text-xs font-bold text-ink/60 mt-1.5">학번 ${escapeHtml(id)}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[11px] font-bold text-ink/55">부스 인증 횟수</p>
+              <p class="text-base font-black text-ink">총 ${student.visits.toLocaleString()}회</p>
+            </div>
+          </div>
+
+          <div class="flex items-baseline justify-between border-t border-ink/10 pt-3">
+            <span class="text-xs font-extrabold text-ink/70">사용 가능 포인트</span>
+            <span class="text-3xl font-black text-ink tracking-tight">${student.points.toLocaleString()}<span class="text-lg text-marker-dark ml-0.5">P</span></span>
+          </div>
+          <p class="mt-1.5 text-[11px] font-bold text-marker-dark text-right">${rank.nextLabel}</p>
+        </div>
+      `;
+
+      // 2) 리워드 교환 및 달성률 리스트
+      const rewardsHtml = `
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-[15px] font-black text-ink">🎁 캠퍼스 리워드 교환</h3>
+            <span class="text-[11px] font-bold text-ink/50">즉시 쿠폰 발급</span>
+          </div>
+          <div class="space-y-3">
+            ${REWARD_CATALOG.map((reward) => {
+              const pct = Math.min(100, Math.round((student.points / reward.cost) * 100));
+              const canRedeem = student.points >= reward.cost;
+              const remain = Math.max(0, reward.cost - student.points);
+
+              return `
+                <div class="rounded-xl border ${canRedeem ? 'border-marker-deep bg-marker-light/40' : 'border-ink/15 bg-paper'} p-3">
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <span class="w-9 h-9 rounded-xl bg-white border border-ink/15 flex items-center justify-center text-lg shrink-0">${reward.emoji}</span>
+                      <div class="min-w-0">
+                        <p class="text-xs font-black text-ink truncate">${escapeHtml(reward.title)}</p>
+                        <p class="text-[11px] text-ink/55 font-medium truncate">${escapeHtml(reward.desc)}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      ${canRedeem ? `onclick="redeemReward('${escapeHtml(id)}', '${reward.id}')"` : 'disabled'}
+                      class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-black transition ${
+                        canRedeem
+                          ? 'tactile-btn border-2 border-ink bg-marker text-ink hover:bg-marker-deep cursor-pointer'
+                          : 'bg-gray-200 text-gray-500 border border-gray-300 cursor-not-allowed'
+                      }"
+                    >
+                      ${canRedeem ? `${reward.cost.toLocaleString()}P 교환` : `${remain.toLocaleString()}P 부족`}
+                    </button>
+                  </div>
+                  <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-ink/15">
+                    <div class="h-full rounded-full transition-all duration-500 ${
+                      canRedeem ? 'bg-marker-deep' : 'bg-marker'
+                    }" style="width: ${pct}%"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      // 3) 나의 투표 · 부스 인증 히스토리 (세션 썸네일 포함)
+      const historyItemsHtml = student.history.length
+        ? student.history
+            .map((item) => {
+              const thumb = sessionThumbnails[item.id];
+              return `
+                <li class="py-3 first:pt-0 last:pb-0 flex items-center gap-3">
+                  ${
+                    thumb
+                      ? `<img src="${thumb}" alt="인증 썸네일" class="w-12 h-12 rounded-xl object-cover border border-ink/20 shrink-0" />`
+                      : `<div class="w-12 h-12 rounded-xl bg-marker-light border border-marker-deep/30 flex items-center justify-center text-lg shrink-0">🚬</div>`
+                  }
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-black text-ink truncate">${escapeHtml(item.choiceLabel)}</p>
+                    <p class="text-[11px] font-bold text-ink/60 truncate mt-0.5">📍 ${escapeHtml(item.booth)}</p>
+                    <p class="text-[10.5px] text-ink/45 font-medium">${escapeHtml(item.timestamp)}</p>
+                  </div>
+                  <span class="shrink-0 text-xs font-black text-marker-dark bg-marker-light border border-marker-deep/40 px-2.5 py-1 rounded-lg">
+                    +${item.points}P
+                  </span>
+                </li>
+              `;
+            })
+            .join('')
+        : '<li class="text-xs text-ink/50 py-3 text-center">아직 인증 기록이 없습니다.</li>';
+
+      const historyHtml = `
+        <div class="rounded-2xl border-2 border-ink bg-white p-4 shadow-[0_4px_0_#e8f7d4]">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-[15px] font-black text-ink">📋 나의 부스 인증 내역</h3>
+            <span class="text-[11px] font-bold text-ink/50">최근 ${student.history.length}건</span>
+          </div>
+          <ul class="divide-y divide-ink/10">${historyItemsHtml}</ul>
+        </div>
+      `;
+
+      container.innerHTML = dashboardHtml + rewardsHtml + historyHtml;
+    }
+
+    function goVoteWithId(studentId) {
+      const input = document.getElementById('student-id-input');
+      input.value = studentId;
+      handleStudentIdInput(input);
+      switchTab('vote');
+    }
+
+    /**
+     * 리워드 교환 시뮬레이션 + 쿠폰 발급 모달 표시
+     */
+    function redeemReward(studentId, rewardId) {
+      const student = appData.students[studentId];
+      const reward = REWARD_CATALOG.find((r) => r.id === rewardId);
+      if (!student || !reward) return;
+
+      if (student.points < reward.cost) {
+        showToast('포인트가 부족합니다.', 'error');
+        return;
+      }
+
+      student.points -= reward.cost;
+      const randomDigits = Math.floor(1000 + Math.random() * 9000);
+      const couponCode = `SV-2026-${randomDigits}-${studentId.slice(-2)}`;
+
+      if (!Array.isArray(student.redeemedCoupons)) {
+        student.redeemedCoupons = [];
+      }
+      student.redeemedCoupons.unshift({
+        title: reward.title,
+        code: couponCode,
+        issuedAt: formatNowTimestamp(),
+      });
+
+      saveAppData();
+      renderMyPointsView(true);
+
+      // 쿠폰 모달 채우기 및 오픈
+      document.getElementById('coupon-emoji').textContent = reward.emoji;
+      document.getElementById('coupon-title').textContent = reward.title;
+      document.getElementById('coupon-deduct-info').textContent =
+        `${reward.cost.toLocaleString()}P 사용 완료 · 잔여 ${student.points.toLocaleString()}P`;
+      document.getElementById('coupon-code').textContent = couponCode;
+      document.getElementById('coupon-meta').textContent = `학번 ${studentId} · 발급일 ${formatNowTimestamp()}`;
+      document.getElementById('coupon-modal').classList.remove('hidden');
+
+      showToast(`${reward.title} 쿠폰이 발급되었습니다!`, 'success');
+    }
+
+    function closeCouponModal() {
+      document.getElementById('coupon-modal').classList.add('hidden');
+    }
+
+    /**
+     * 하단 접이식 아이디어톤 데모 설정 패널 로직
+     */
+    function toggleDemoPanel() {
+      const panel = document.getElementById('demo-control-panel');
+      const btn = document.getElementById('demo-panel-toggle-btn');
+      const chevron = document.getElementById('demo-chevron-icon');
+
+      const willOpen = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !willOpen);
+      btn.setAttribute('aria-expanded', String(willOpen));
+      chevron.style.transform = willOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+
+      if (willOpen) {
+        syncDemoControlInputs();
+        toggleResetConfirm(false);
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function syncDemoControlInputs() {
+      document.getElementById('demo-question-input').value = appData.topic.question;
+      document.getElementById('demo-opt-a-input').value = appData.topic.optionA;
+      document.getElementById('demo-opt-b-input').value = appData.topic.optionB;
+
+      const selectEl = document.getElementById('demo-booth-select');
+      const exists = Array.from(selectEl.options).some((o) => o.value === appData.boothLocation);
+      if (!exists) {
+        const opt = document.createElement('option');
+        opt.value = appData.boothLocation;
+        opt.textContent = appData.boothLocation;
+        selectEl.appendChild(opt);
+      }
+      selectEl.value = appData.boothLocation;
+      updateSimulatedQrUrl();
+    }
+
+    function applyPresetTopic(presetIndex) {
+      const preset = TOPIC_PRESETS[presetIndex];
+      if (!preset) return;
+      appData.topic = { ...preset };
+      saveAppData();
+      renderAll();
+      showToast(`주제가 "${preset.question}"으로 변경되었습니다.`, 'success');
+    }
+
+    function handleLiveCustomTopicEdit() {
+      const q = document.getElementById('demo-question-input').value.trim();
+      const a = document.getElementById('demo-opt-a-input').value.trim();
+      const b = document.getElementById('demo-opt-b-input').value.trim();
+
+      if (q) appData.topic.question = q;
+      if (a) appData.topic.optionA = a;
+      if (b) appData.topic.optionB = b;
+
+      saveAppData();
+
+      // 입력 포커스를 유지하면서 화면 텍스트만 실시간 업데이트
+      document.getElementById('vote-question-prompt').textContent = appData.topic.question;
+      document.getElementById('vote-topic-matchup').innerHTML =
+        `${escapeHtml(appData.topic.optionA)} <span class="text-marker-deep mx-0.5">vs</span> ${escapeHtml(appData.topic.optionB)}`;
+      document.getElementById('choice-label-A').textContent = appData.topic.optionA;
+      document.getElementById('choice-label-B').textContent = appData.topic.optionB;
+      renderLiveTab();
+    }
+
+    function handleBoothSelectChange(newBooth) {
+      appData.boothLocation = newBooth;
+      if (typeof appData.boothStats[newBooth] !== 'number') {
+        appData.boothStats[newBooth] = 10;
+      }
+      saveAppData();
+      renderAll();
+      showToast(`QR 부스 위치가 "${newBooth}"로 전환되었습니다.`, 'success');
+    }
+
+    function updateSimulatedQrUrl() {
+      const baseUrl = window.location.href.split('?')[0];
+      const previewUrl = `${baseUrl}?booth=${encodeURIComponent(appData.boothLocation)}`;
+      document.getElementById('demo-qr-url-preview').textContent = previewUrl;
+    }
+
+    /**
+     * iframe 환경 호환 클립보드 복사 (execCommand 사용)
+     */
+    function copySimulatedQrUrl() {
+      const text = document.getElementById('demo-qr-url-preview').textContent;
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast('부스별 QR 링크가 복사되었습니다!', 'success');
+      } catch (err) {
+        showToast('링크 복사에 실패했습니다.', 'error');
+      }
+      document.body.removeChild(temp);
+    }
+
+    function toggleResetConfirm(show) {
+      document.getElementById('reset-step-1').classList.toggle('hidden', show);
+      document.getElementById('reset-step-2').classList.toggle('hidden', !show);
+    }
+
+    function resetDemoData() {
+      appData = createDefaultData();
+      saveAppData();
+      resetVoteFormInputs();
+      document.getElementById('student-id-input').value = '';
+      handleStudentIdInput(document.getElementById('student-id-input'));
+      document.getElementById('points-lookup-input').value = '20231234';
+      lastActiveStudentId = '20231234';
+      toggleResetConfirm(false);
+      renderAll();
+      showToast('모든 데모 데이터가 초기 상태로 리셋되었습니다.', 'success');
+    }
+
+    /**
+     * 인라인 유효성 오류 & 흔들림 효과
+     */
+    function showFormError(message, highlightId) {
+      const box = document.getElementById('form-error-box');
+      document.getElementById('form-error-text').textContent = message;
+      box.classList.remove('hidden');
+
+      if (highlightId) {
+        const el = document.getElementById(highlightId);
+        if (el) {
+          el.classList.remove('animate-shake');
+          void el.offsetWidth;
+          el.classList.add('animate-shake');
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      showToast(message, 'error');
+    }
+
+    function hideFormError() {
+      document.getElementById('form-error-box').classList.add('hidden');
+    }
+
+    /**
+     * 상단 토스트 알림 (alert 대체)
+     */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const tone =
+        type === 'error'
+          ? 'bg-red-600 text-white border-red-800'
+          : 'bg-ink text-white border-marker';
+
+      toast.className = `pointer-events-auto px-4 py-3 rounded-2xl border-2 shadow-lg text-xs font-bold flex items-center gap-2 animate-pop-in ${tone}`;
+      toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span><span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-8px)';
+        setTimeout(() => toast.remove(), 260);
+      }, 2500);
+    }
+
+    /**
+     * 유틸리티 함수들
+     */
+    function maskStudentId(id) {
+      if (id.length <= 4) return '****';
+      return `${id.slice(0, 4)}****`;
+    }
+
+    function formatNowTimestamp() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // 앱 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      applyBoothFromUrl();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
